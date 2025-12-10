@@ -13,7 +13,13 @@ WORKDIR /workspace
 # Create non-root user (node user already exists in node image)
 RUN mkdir -p /workspace/data && chown -R node:node /workspace
 
+# Copy package files first for better caching
+COPY --chown=node:node package*.json ./
+
 USER node
+
+# Install dependencies (will be overridden by anonymous volume in docker-compose)
+RUN npm install
 
 # Default command for development
 CMD ["npm", "run", "dev"]
