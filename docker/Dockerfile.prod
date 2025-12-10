@@ -21,6 +21,8 @@ ENV NODE_ENV=production
 # Set build-time environment variables (database won't be accessed during build now)
 ENV DATABASE_URL=/app/data/app.db
 ENV BETTER_AUTH_SECRET=build-time-secret-will-be-replaced-at-runtime
+# Create public directory if it doesn't exist (Next.js may not have static assets)
+RUN mkdir -p /app/public
 RUN npm run build
 
 # Stage 3: Production runner
@@ -35,9 +37,9 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Copy built application
-COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
 
 # Create data directory for SQLite
 RUN mkdir -p /app/data && chown -R nextjs:nodejs /app/data
