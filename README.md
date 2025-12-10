@@ -80,6 +80,7 @@ NEXT_PUBLIC_APP_URL=https://yourdomain.com
 ```
 
 Generate a secret:
+
 ```bash
 openssl rand -base64 32
 ```
@@ -137,20 +138,6 @@ socialProviders: {
 
 SSH into your VPS and install required software:
 
-```bash
-# Update system
-apt update && apt upgrade -y
-
-# Install Docker
-curl -fsSL https://get.docker.com | sh
-
-# Install Docker Compose
-apt install docker-compose-plugin -y
-
-# Install Nginx and Certbot for SSL
-apt install -y nginx certbot python3-certbot-nginx
-```
-
 ### 2. Clone Repository on Server
 
 ```bash
@@ -161,6 +148,7 @@ cd Financial-Tools
 ### 3. Add Subdomain at DNS Provider
 
 Create an A record pointing to your server IP:
+
 - Example: `finapps.compound-interests.com` → `your-server-ip`
 
 ### 4. Configure Nginx Reverse Proxy
@@ -232,7 +220,7 @@ Add your production configuration:
 
 ```env
 # Database
-DATABASE_URL=file:/app/data/app.db
+DATABASE_URL=/app/data/app.db
 
 # Better Auth
 BETTER_AUTH_SECRET=<generate-with-openssl-below>
@@ -310,37 +298,41 @@ Edit CSS variables in `src/app/globals.css`:
 3. Import and use in your components
 
 Example:
+
 ```typescript
-import { db } from '@/lib/db';
-import { calculations } from '@/lib/db/schema';
+import { db } from "@/lib/db";
+import { calculations } from "@/lib/db/schema";
 
 const results = await db.select().from(calculations);
 ```
 
 ## Commands Reference
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm run start` | Run production build |
-| `npm run db:push` | Push schema to database |
-| `npm run db:generate` | Generate migration files |
-| `npm run db:studio` | Open Drizzle Studio |
-| `./deploy.sh` | Deploy to production |
+| Command                      | Description                  |
+| ---------------------------- | ---------------------------- |
+| `npm run dev`                | Start development server     |
+| `npm run build`              | Build for production         |
+| `npm run start`              | Run production build         |
+| `npm run db:push`            | Push schema to database      |
+| `npm run db:generate`        | Generate migration files     |
+| `npm run db:studio`          | Open Drizzle Studio          |
+| `./deploy.sh`                | Deploy to production         |
 | `./deploy.sh --restart-only` | Restart production container |
 
 ## Troubleshooting
 
 ### Container won't start
+
 - Ensure Docker Desktop is running
 - Try rebuilding: `Dev Containers: Rebuild Container`
 
 ### Database locked
+
 - SQLite can only handle one write at a time
 - For concurrent writes, consider switching to PostgreSQL
 
 ### Permission denied on data/
+
 - Inside container: `sudo chown -R node:node /workspace/data`
 
 ## License

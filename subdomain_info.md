@@ -92,7 +92,7 @@ nano .env.production
 
 ```env
 # Database
-DATABASE_URL=file:/app/data/app.db
+DATABASE_URL=/app/data/app.db
 
 # Better Auth
 BETTER_AUTH_SECRET=<generate-a-secure-random-string>

@@ -18,10 +18,8 @@ RUN npm ci
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
-# Create data directory before build (Next.js may check database during build)
-RUN mkdir -p /app/data
-# Set DATABASE_URL for build time
-ENV DATABASE_URL=file:/app/data/app.db
+# Set build-time environment variables (database won't be accessed during build now)
+ENV DATABASE_URL=/app/data/app.db
 ENV BETTER_AUTH_SECRET=build-time-secret-will-be-replaced-at-runtime
 RUN npm run build
 
