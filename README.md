@@ -27,7 +27,7 @@ A Docker-first Next.js template with authentication, SQLite database, and admin 
    ```bash
    npm run dev
    ```
-6. Visit http://localhost:3000
+6. Visit http://localhost:3050
 
 That's it! No local Node.js installation needed.
 
@@ -131,11 +131,11 @@ socialProviders: {
 },
 ```
 
-## Deployment to Racknerd
+## Production Deployment
 
-### First-Time Server Setup
+### 1. First-Time Server Setup
 
-SSH into your VPS and install Docker:
+SSH into your VPS and install required software:
 
 ```bash
 # Update system
@@ -146,44 +146,138 @@ curl -fsSL https://get.docker.com | sh
 
 # Install Docker Compose
 apt install docker-compose-plugin -y
+
+# Install Nginx and Certbot for SSL
+apt install -y nginx certbot python3-certbot-nginx
 ```
 
-### Deploy
-
-1. Create `.env.production` with production secrets
-2. Update `deploy.sh` with your server details:
-   ```bash
-   REMOTE_USER="root"
-   REMOTE_HOST="your-server-ip"
-   ```
-3. Run:
-   ```bash
-   chmod +x deploy.sh
-   ./deploy.sh
-   ```
-
-### HTTPS with Caddy (Recommended)
-
-On your server, install Caddy:
+### 2. Clone Repository on Server
 
 ```bash
-apt install -y caddy
+git clone https://github.com/jraitt/Financial-Tools.git
+cd Financial-Tools
 ```
 
-Edit `/etc/caddy/Caddyfile`:
+### 3. Add Subdomain at DNS Provider
 
+Create an A record pointing to your server IP:
+- Example: `finapps.compound-interests.com` → `your-server-ip`
+
+### 4. Configure Nginx Reverse Proxy
+
+Create nginx configuration:
+
+```bash
+sudo nano /etc/nginx/sites-available/finapps.conf
 ```
-yourdomain.com {
-    reverse_proxy localhost:3000
+
+Add the following configuration:
+
+```nginx
+server {
+    listen 80;
+    server_name finapps.compound-interests.com;  # Update with your subdomain
+
+    location / {
+        proxy_pass http://127.0.0.1:3050;
+        # Headers for Next.js
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 90;
+
+        # Next.js specific optimizations
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header Accept-Encoding "";
+    }
+
+    # Handle Next.js static assets
+    location /_next/static/ {
+        proxy_pass http://127.0.0.1:3050;
+        proxy_cache_valid 200 1y;
+        add_header Cache-Control "public, immutable";
+    }
 }
 ```
 
-Restart Caddy:
+Enable the site:
+
 ```bash
-systemctl restart caddy
+sudo ln -s /etc/nginx/sites-available/finapps.conf /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
 ```
 
-Caddy automatically handles SSL certificates.
+### 5. Get SSL Certificate
+
+```bash
+sudo certbot --nginx -d finapps.compound-interests.com
+```
+
+Certbot will automatically configure HTTPS and set up auto-renewal.
+
+### 6. Configure Environment Variables
+
+Create production environment file:
+
+```bash
+nano .env.production
+```
+
+Add your production configuration:
+
+```env
+# Database
+DATABASE_URL=file:/app/data/app.db
+
+# Better Auth
+BETTER_AUTH_SECRET=<generate-with-openssl-below>
+BETTER_AUTH_URL=https://finapps.compound-interests.com
+
+# App
+NEXT_PUBLIC_APP_URL=https://finapps.compound-interests.com
+```
+
+Generate secure secret:
+
+```bash
+openssl rand -base64 32
+```
+
+### 7. Build and Start Docker Container
+
+```bash
+docker compose -f docker-compose.prod.yml up -d --build
+```
+
+Your application is now live at `https://finapps.compound-interests.com`!
+
+### Useful Production Commands
+
+```bash
+# View logs
+docker logs financial-tools
+
+# View live logs
+docker logs -f financial-tools
+
+# Stop the container
+docker compose -f docker-compose.prod.yml down
+
+# Restart the container
+docker compose -f docker-compose.prod.yml restart
+
+# Pull latest code and rebuild
+git pull
+docker compose -f docker-compose.prod.yml up -d --build
+
+# View running containers
+docker ps
+```
 
 ## Adding shadcn/ui Components
 
