@@ -1,0 +1,22 @@
+# Docker Compose for local development (outside of Dev Containers)
+# Use this if you prefer docker-compose over VS Code Dev Containers
+
+services:
+  app:
+    container_name: financial-tools
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/workspace
+      - /workspace/node_modules # Anonymous volume to preserve node_modules
+      - ./data:/workspace/data # Persist SQLite database
+    environment:
+      - NODE_ENV=development
+    env_file:
+      - .env.development
+    command: npm run dev
+    stdin_open: true
+    tty: true
