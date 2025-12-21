@@ -10,7 +10,9 @@ export const {
   signOut,
   signUp,
   useSession,
-  changePassword,
-  forgetPassword,
-  resetPassword,
 } = authClient;
+
+// Password management - use authClient directly in components
+// authClient.forgetPassword({ email, redirectTo })
+// authClient.resetPassword({ newPassword, token })
+// authClient.changePassword({ currentPassword, newPassword, revokeOtherSessions })

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { TrendingUp, ArrowLeft } from 'lucide-react';
-import { forgetPassword } from '@/lib/auth-client';
+import { authClient } from '@/lib/auth-client';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,7 +22,7 @@ export default function ForgotPasswordPage() {
     setLoading(true);
 
     try {
-      const result = await forgetPassword({
+      const result = await authClient.forgetPassword({
         email,
         redirectTo: '/reset-password',
       });

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { changePassword } from '@/lib/auth-client';
+import { authClient } from '@/lib/auth-client';
 import {
   Dialog,
   DialogContent,
@@ -46,7 +46,7 @@ export function ChangePasswordDialog() {
     setLoading(true);
 
     try {
-      const result = await changePassword({
+      const result = await authClient.changePassword({
         currentPassword,
         newPassword,
         revokeOtherSessions: true,

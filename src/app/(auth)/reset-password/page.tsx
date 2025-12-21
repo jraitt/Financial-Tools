@@ -4,7 +4,7 @@ import { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { TrendingUp, ArrowLeft, CheckCircle, XCircle } from 'lucide-react';
-import { resetPassword } from '@/lib/auth-client';
+import { authClient } from '@/lib/auth-client';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -49,7 +49,7 @@ function ResetPasswordForm() {
     setLoading(true);
 
     try {
-      const result = await resetPassword({
+      const result = await authClient.resetPassword({
         newPassword,
         token,
       });
