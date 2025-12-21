@@ -17,6 +17,7 @@
 # Misc
 .DS_Store
 *.pem
+*.zip
 
 # Debug
 npm-debug.log*
