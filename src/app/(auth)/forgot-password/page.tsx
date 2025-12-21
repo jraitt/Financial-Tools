@@ -22,13 +22,20 @@ export default function ForgotPasswordPage() {
     setLoading(true);
 
     try {
-      const result = await authClient.forgetPassword({
-        email,
-        redirectTo: '/reset-password',
+      // Call the password reset API endpoint directly
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+      const response = await fetch(`${baseUrl}/api/auth/forget-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          redirectTo: '/reset-password',
+        }),
       });
 
-      if (result.error) {
-        setError(result.error.message || 'Failed to send reset email');
+      if (!response.ok) {
+        const data = await response.json();
+        setError(data.message || 'Failed to send reset email');
       } else {
         setSuccess(true);
       }
