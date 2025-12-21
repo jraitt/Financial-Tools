@@ -13,8 +13,10 @@ const authRoutes = ['/login', '/register'];
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
-  // Get session from cookie
-  const sessionCookie = request.cookies.get('better-auth.session_token');
+  // Get session from cookie - check both secure and non-secure cookie names
+  // In production with HTTPS, Better Auth uses __Secure- prefix
+  const sessionCookie = request.cookies.get('__Secure-better-auth.session_token')
+    || request.cookies.get('better-auth.session_token');
   const isAuthenticated = !!sessionCookie?.value;
   
   // Note: We don't redirect authenticated users away from auth pages here
