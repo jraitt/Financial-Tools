@@ -2,8 +2,9 @@ import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { Navbar } from '@/components/landing/navbar';
-import { User, Mail, Shield, Calendar } from 'lucide-react';
+import { User, Mail, Shield } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { SecuritySettings } from '@/components/security-settings';
 
 export default async function SettingsPage() {
     const session = await auth.api.getSession({
@@ -85,20 +86,7 @@ export default async function SettingsPage() {
                             </CardContent>
                         </Card>
 
-                        <Card className="border-border/60 shadow-sm">
-                            <CardHeader>
-                                <CardTitle className="text-lg">Security</CardTitle>
-                                <CardDescription>Update your password and security settings.</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <button className="w-full text-left text-sm font-medium text-primary hover:underline py-2">
-                                    Change Password →
-                                </button>
-                                <button className="w-full text-left text-sm font-medium text-primary hover:underline py-2">
-                                    Manage Two-Factor Authentication →
-                                </button>
-                            </CardContent>
-                        </Card>
+                        <SecuritySettings />
                     </div>
                 </div>
             </main>

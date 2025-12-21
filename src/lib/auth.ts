@@ -18,6 +18,18 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false, // Set to true in production with email provider
+    // Password reset configuration
+    sendResetPassword: async ({ user, url }) => {
+      // For now, log the reset URL (in production, integrate with an email service)
+      console.log(`Password reset requested for ${user.email}: ${url}`);
+      // TODO: Integrate with email service (e.g., Resend, SendGrid, Nodemailer)
+      // Example:
+      // await sendEmail({
+      //   to: user.email,
+      //   subject: 'Reset your password',
+      //   html: `<p>Click <a href="${url}">here</a> to reset your password.</p>`
+      // });
+    },
   },
   
   // Session configuration

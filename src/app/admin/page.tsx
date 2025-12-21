@@ -8,6 +8,7 @@ import { TrendingUp } from 'lucide-react';
 import { SignOutButton } from '../dashboard/sign-out-button';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Badge } from '@/components/ui/badge';
+import { UserActions } from './user-actions';
 
 export default async function AdminPage() {
   const session = await auth.api.getSession({
@@ -101,6 +102,9 @@ export default async function AdminPage() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Created
                   </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-card divide-y divide-border">
@@ -108,6 +112,9 @@ export default async function AdminPage() {
                   <tr key={user.id}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                       {user.name}
+                      {user.id === session.user.id && (
+                        <span className="ml-2 text-xs text-muted-foreground">(you)</span>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       {user.email}
@@ -120,6 +127,14 @@ export default async function AdminPage() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       {user.createdAt?.toLocaleDateString() || 'N/A'}
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <UserActions
+                        userId={user.id}
+                        currentRole={user.role || 'user'}
+                        isCurrentUser={user.id === session.user.id}
+                        userName={user.name}
+                      />
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -127,14 +142,12 @@ export default async function AdminPage() {
           </div>
         </div>
 
-        {/* First User Admin Note */}
+        {/* First Admin Setup Note */}
         <div className="mt-8 p-4 bg-primary/10 rounded-lg border border-primary/20">
           <p className="text-sm text-foreground">
-            <strong>Tip:</strong> To make a user an admin, update their role directly in the database:
+            <strong>Tip:</strong> Use the actions menu (⋮) to promote users to admin or remove admin privileges.
+            You cannot demote yourself to prevent accidental lockout.
           </p>
-          <code className="block mt-2 p-2 bg-muted rounded text-xs font-mono">
-            UPDATE users SET role = &apos;admin&apos; WHERE email = &apos;your@email.com&apos;;
-          </code>
         </div>
       </main>
     </div>
