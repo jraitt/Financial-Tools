@@ -44,9 +44,12 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/drizzle ./drizzle
 COPY --from=builder /app/drizzle.config.ts ./
 COPY --from=builder /app/src/lib/db/schema.ts ./src/lib/db/schema.ts
-# Copy drizzle modules to node_modules
+# Copy drizzle modules and dependencies to node_modules
 COPY --from=builder /app/node_modules/drizzle-orm ./node_modules/drizzle-orm
 COPY --from=builder /app/node_modules/drizzle-kit ./node_modules/drizzle-kit
+COPY --from=builder /app/node_modules/esbuild ./node_modules/esbuild
+COPY --from=builder /app/node_modules/@esbuild ./node_modules/@esbuild
+COPY --from=builder /app/node_modules/esbuild-register ./node_modules/esbuild-register
 # Symlink drizzle-kit binary to make it available in PATH
 RUN ln -s /app/node_modules/drizzle-kit/bin.cjs /usr/local/bin/drizzle-kit
 
