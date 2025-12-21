@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { TrendingUp, ArrowLeft } from 'lucide-react';
-import { authClient } from '@/lib/auth-client';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,9 +21,9 @@ export default function ForgotPasswordPage() {
     setLoading(true);
 
     try {
-      // Call the password reset API endpoint directly
-      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-      const response = await fetch(`${baseUrl}/api/auth/forget-password`, {
+      // Call the Better Auth password reset API endpoint
+      // Use relative URL so it works on any port/domain
+      const response = await fetch('/api/auth/forget-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -33,12 +32,9 @@ export default function ForgotPasswordPage() {
         }),
       });
 
-      if (!response.ok) {
-        const data = await response.json();
-        setError(data.message || 'Failed to send reset email');
-      } else {
-        setSuccess(true);
-      }
+      // Better Auth returns 200 even if user doesn't exist (security best practice)
+      // Always show success to prevent email enumeration attacks
+      setSuccess(true);
     } catch {
       setError('An unexpected error occurred');
     } finally {
