@@ -21,6 +21,9 @@ ENV NODE_ENV=production
 # Set build-time environment variables (database won't be accessed during build now)
 ENV DATABASE_URL=/app/data/app.db
 ENV BETTER_AUTH_SECRET=build-time-secret-will-be-replaced-at-runtime
+# NEXT_PUBLIC_ vars must be set at build time to be inlined into client JS
+ARG NEXT_PUBLIC_APP_URL=https://finapps.compound-interests.com
+ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
 # Create public directory if it doesn't exist (Next.js may not have static assets)
 RUN mkdir -p /app/public
 RUN npm run build
