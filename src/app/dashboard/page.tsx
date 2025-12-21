@@ -2,9 +2,7 @@ import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { TrendingUp } from 'lucide-react';
-import { SignOutButton } from './sign-out-button';
-import { ThemeToggle } from '@/components/theme-toggle';
+import { Navbar } from '@/components/landing/navbar';
 
 export default async function DashboardPage() {
   const session = await auth.api.getSession({
@@ -17,36 +15,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-muted/30">
-      {/* Header */}
-      <header className="bg-background border-b sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                <TrendingUp className="h-4 w-4 text-white" />
-              </div>
-              <span className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                Financial Tools
-              </span>
-            </Link>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground">
-                {session.user.email}
-              </span>
-              {session.user.role === 'admin' && (
-                <Link
-                  href="/admin"
-                  className="text-sm font-medium text-primary hover:text-primary/80"
-                >
-                  Admin
-                </Link>
-              )}
-              <ThemeToggle />
-              <SignOutButton />
-            </div>
-          </div>
-        </div>
-      </header>
+      <Navbar session={session} />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

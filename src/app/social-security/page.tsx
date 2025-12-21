@@ -1,5 +1,6 @@
 import SocialSecurityCalculator from '@/components/social-security-calculator';
 import { Navbar } from '@/components/landing/navbar';
+import { PageHero } from '@/components/landing/page-hero';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 
@@ -16,6 +17,10 @@ export default async function CalculatorPage() {
   return (
     <>
       <Navbar session={session} />
+      <PageHero
+        title="Social Security Estimator"
+        accentWord="Estimator"
+      />
       <SocialSecurityCalculator />
     </>
   );

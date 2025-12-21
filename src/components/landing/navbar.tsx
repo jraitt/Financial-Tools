@@ -1,14 +1,27 @@
 'use client';
 
 import Link from 'next/link';
-import { Menu, TrendingUp } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Menu, TrendingUp, User, LogOut, LayoutDashboard, ShieldCheck, ChevronDown, Settings } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
+import { signOut } from '@/lib/auth-client';
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface NavbarProps {
   session: {
@@ -21,8 +34,18 @@ interface NavbarProps {
 }
 
 export function Navbar({ session }: NavbarProps) {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await signOut();
+    router.refresh();
+  };
+
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
+    <nav
+      className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-md border-b border-border shadow-sm"
+      style={{ overflowAnchor: 'none' }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
@@ -55,19 +78,70 @@ export function Navbar({ session }: NavbarProps) {
           <div className="hidden md:flex items-center gap-3">
             <ThemeToggle />
             {session ? (
-              <>
-                <span className="text-sm text-muted-foreground">
-                  {session.user.name}
-                </span>
-                <Button asChild variant="default" size="sm">
-                  <Link href="/dashboard">Dashboard</Link>
+              <div className="flex items-center gap-3">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="relative h-9 flex items-center gap-2 pr-1 hover:bg-accent/50 transition-colors">
+                      <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+                        <User className="h-4 w-4" />
+                      </div>
+                      <span className="text-sm font-medium text-foreground max-w-[120px] truncate">
+                        {session.user.name}
+                      </span>
+                      <ChevronDown className="h-3 w-3 text-muted-foreground" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 mt-2 animate-in fade-in-0 zoom-in-95">
+                    <DropdownMenuLabel className="font-normal border-b pb-2 mb-1">
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">{session.user.name}</p>
+                        <p className="text-xs leading-none text-muted-foreground mt-1">{session.user.email}</p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuItem asChild className="cursor-pointer">
+                      <Link href="/dashboard" className="flex items-center w-full">
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        <span>Dashboard</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild className="cursor-pointer">
+                      <Link href="/settings" className="flex items-center w-full">
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Account Settings</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    {session.user.role === 'admin' && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild className="cursor-pointer">
+                          <Link href="/admin" className="flex items-center w-full text-amber-600 dark:text-amber-400">
+                            <ShieldCheck className="mr-2 h-4 w-4" />
+                            <span>Admin Console</span>
+                          </Link>
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="text-destructive focus:bg-destructive/10 cursor-pointer"
+                      onClick={handleLogout}
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="hidden lg:flex items-center gap-2 border-border/50 hover:bg-destructive/5 hover:text-destructive hover:border-destructive/30 transition-all"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Logout
                 </Button>
-                {session.user.role === 'admin' && (
-                  <Button asChild variant="outline" size="sm">
-                    <Link href="/admin">Admin</Link>
-                  </Button>
-                )}
-              </>
+              </div>
             ) : (
               <>
                 <Button asChild variant="ghost" size="sm">
@@ -91,6 +165,12 @@ export function Navbar({ session }: NavbarProps) {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-72">
+                <SheetHeader>
+                  <SheetTitle className="sr-only">Menu</SheetTitle>
+                  <SheetDescription className="sr-only">
+                    Navigate through the application.
+                  </SheetDescription>
+                </SheetHeader>
                 <div className="flex flex-col gap-4 mt-8">
                   <Link
                     href="/social-security"
@@ -106,19 +186,46 @@ export function Navbar({ session }: NavbarProps) {
                   </Link>
                   <hr className="my-2" />
                   {session ? (
-                    <>
-                      <p className="text-sm text-muted-foreground">
-                        Signed in as {session.user.name}
-                      </p>
-                      <Button asChild className="w-full">
-                        <Link href="/dashboard">Dashboard</Link>
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center gap-3 px-2 py-1 mb-2">
+                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                          <User className="h-6 w-6" />
+                        </div>
+                        <div className="flex flex-col">
+                          <p className="font-semibold text-foreground leading-tight">{session.user.name}</p>
+                          <p className="text-xs text-muted-foreground">{session.user.email}</p>
+                        </div>
+                      </div>
+                      <Button asChild variant="ghost" className="justify-start px-2 font-medium">
+                        <Link href="/dashboard" className="flex items-center gap-2">
+                          <LayoutDashboard className="h-5 w-5" />
+                          Dashboard
+                        </Link>
+                      </Button>
+                      <Button asChild variant="ghost" className="justify-start px-2 font-medium">
+                        <Link href="/settings" className="flex items-center gap-2">
+                          <Settings className="h-5 w-5" />
+                          Account Settings
+                        </Link>
                       </Button>
                       {session.user.role === 'admin' && (
-                        <Button asChild variant="outline" className="w-full">
-                          <Link href="/admin">Admin</Link>
+                        <Button asChild variant="ghost" className="justify-start px-2 font-medium text-amber-600 dark:text-amber-400">
+                          <Link href="/admin" className="flex items-center gap-2">
+                            <ShieldCheck className="h-5 w-5" />
+                            Admin Console
+                          </Link>
                         </Button>
                       )}
-                    </>
+                      <hr className="my-1 border-border/50" />
+                      <Button
+                        variant="ghost"
+                        className="justify-start px-2 font-medium text-destructive hover:text-destructive hover:bg-destructive/5"
+                        onClick={handleLogout}
+                      >
+                        <LogOut className="h-5 w-5 mr-2" />
+                        Sign Out
+                      </Button>
+                    </div>
                   ) : (
                     <>
                       <Button asChild variant="outline" className="w-full">

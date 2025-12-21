@@ -67,6 +67,7 @@ export const calculations = sqliteTable('calculations', {
   inputData: text('input_data'), // JSON string of inputs
   resultData: text('result_data'), // JSON string of results
   createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
 });
 
 // Type exports for use in application
