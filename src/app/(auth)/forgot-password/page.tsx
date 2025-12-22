@@ -21,9 +21,9 @@ export default function ForgotPasswordPage() {
     setLoading(true);
 
     try {
-      // Call the Better Auth password reset API endpoint
-      // Use relative URL so it works on any port/domain
-      const response = await fetch('/api/auth/forget-password', {
+      // Call the Better Auth password reset endpoint
+      // The endpoint is /request-password-reset (not /forget-password)
+      await fetch('/api/auth/request-password-reset', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -32,8 +32,8 @@ export default function ForgotPasswordPage() {
         }),
       });
 
-      // Better Auth returns 200 even if user doesn't exist (security best practice)
       // Always show success to prevent email enumeration attacks
+      // Better Auth returns success even if email doesn't exist
       setSuccess(true);
     } catch {
       setError('An unexpected error occurred');
