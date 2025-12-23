@@ -11,7 +11,15 @@
       "Skill(frontend-design)",
       "Bash(npm run dev:*)",
       "Bash(git push)",
-      "Bash(npx next build)"
+      "Bash(npx next build)",
+      "Bash(npx tsc:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(unzip:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(docker compose exec:*)",
+      "Bash(docker compose:*)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []
