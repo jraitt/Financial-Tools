@@ -9,6 +9,7 @@ import {
   Receipt,
   Wallet,
   ArrowRight,
+  Heart,
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -21,6 +22,14 @@ const tools = [
     href: '/social-security',
     status: 'live',
     color: 'primary',
+  },
+  {
+    title: 'ACA Premium Tax Credit',
+    description: 'Estimate your health insurance subsidy based on household income and family size.',
+    icon: Heart,
+    href: '/ptc-calculator',
+    status: 'live',
+    color: 'accent',
   },
   {
     title: 'Mortgage Calculator',

@@ -67,6 +67,12 @@ export function Navbar({ session }: NavbarProps) {
               SS Calculator
             </Link>
             <Link
+              href="/ptc-calculator"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              PTC Calculator
+            </Link>
+            <Link
               href="#features"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
@@ -177,6 +183,12 @@ export function Navbar({ session }: NavbarProps) {
                     className="text-lg font-medium hover:text-primary transition-colors"
                   >
                     SS Calculator
+                  </Link>
+                  <Link
+                    href="/ptc-calculator"
+                    className="text-lg font-medium hover:text-primary transition-colors"
+                  >
+                    PTC Calculator
                   </Link>
                   <Link
                     href="#features"
