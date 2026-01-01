@@ -19,7 +19,11 @@
       "Bash(powershell -Command:*)",
       "Bash(docker compose exec:*)",
       "Bash(docker compose:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(timeout 20 npm run dev)",
+      "Bash(timeout 30 bash -c 'until curl -s -o /dev/null -w \"\"%{http_code}\"\" http://localhost:3050/mortgage-calculator | grep -q \"\"200\"\"; do sleep 2; done; echo \"\"Ready\"\"':*)",
+      "Bash(docker logs:*)",
+      "Bash(docker exec:*)"
     ],
     "deny": [],
     "ask": []

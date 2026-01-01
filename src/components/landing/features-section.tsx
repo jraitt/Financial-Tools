@@ -35,8 +35,8 @@ const tools = [
     title: 'Mortgage Calculator',
     description: 'Calculate monthly payments, compare rates, and explore different loan scenarios.',
     icon: Home,
-    href: '#',
-    status: 'coming-soon',
+    href: '/mortgage-calculator',
+    status: 'live',
     color: 'accent',
   },
   {
